@@ -1,8 +1,10 @@
 import User from "../model/userModel.js"
 
-export const fetch = async (req, res)=>{
+export const getUsers = async (req, res)=>{
     try{
-        res.json("Hello world!")
+        const users = await User.find();
+        if (users.length == 0) return res.status(404).json("Users not found!");
+        res.status(200).json(users);
     }
     catch(error)
     {
@@ -17,7 +19,7 @@ export const createUser = async (req, res) =>{
         const userExists = await User.findOne({email});
         if (userExists) return res.status(400).json("User already exists!");
         const savedUser = await userData.save();
-        res.status(200).json(savedUser)
+        res.status(200).json(savedUser);
     }
     catch(error)
     {
