@@ -23,6 +23,20 @@ export const createUser = async (req, res) =>{
     }
     catch(error)
     {
-        res.status(500).json({error: "Internal server error"})
+        res.status(500).json({error: "Internal server error"});
+    }
+}
+
+export const updateUser = async (req, res) =>{
+    try{
+        const id = req.params.id;
+        const userExists = await User.findOne({_id:id});
+        if (!userExists) return res.status(404).json("Users not found!");
+        const updatedUser = await User.findByIdAndUpdate(id, req.body, {new: true});
+        res.status(201).json(updatedUser)
+    }
+    catch(error)
+    {
+        res.status(500).json({error: "Internal server error"});
     }
 }
