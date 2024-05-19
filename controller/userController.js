@@ -17,7 +17,7 @@ export const createUser = async (req, res) =>{
         const userData = new User(req.body);
         const {email} = userData;
         const userExists = await User.findOne({email});
-        if (userExists) return res.status(400).json({error: "User already exists!"});
+        if (userExists) return res.status(400).json({message: "User already exists!"});
         const savedUser = await userData.save();
         res.status(200).json(savedUser);
     }
@@ -31,12 +31,26 @@ export const updateUser = async (req, res) =>{
     try{
         const id = req.params.id;
         const userExists = await User.findOne({_id:id});
-        if (!userExists) return res.status(404).json({error: "Users not found!"});
+        if (!userExists) return res.status(404).json({message: "Users not found!"});
         const updatedUser = await User.findByIdAndUpdate(id, req.body, {new: true});
         res.status(201).json(updatedUser)
     }
     catch(error)
     {
         res.status(500).json({error: "Internal server error"});
+    }
+}
+
+export const deleteUser = async (req, res) =>{
+    try{
+        const id = req.params.id;
+        const userExists = await User.findOne({_id:id});
+        if (!userExists) return res.status(404).json({message: "User not found!"});
+        const deletedUser = await User.findByIdAndDelete(id);
+        res.status(201).json({message: "User deleted successfully"});
+    }
+    catch(error)
+    {
+        res.status(500).json({error: "Internal server error"})
     }
 }
